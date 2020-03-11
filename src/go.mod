@@ -1,3 +1,3 @@
-module github.com/pluralsight-projects/golang-concurrent-programming
+module alog
 
 go 1.14
