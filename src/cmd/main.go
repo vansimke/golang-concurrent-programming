@@ -2,6 +2,7 @@ package main
 
 import (
 	"alog"
+	"bufio"
 	"flag"
 	"fmt"
 	"io"
@@ -11,7 +12,8 @@ import (
 )
 
 func main() {
-	out := flag.String("out", "stdout", "File name to use for log output. If stdout is provided, then output is written directly to the console")
+	out := flag.String("out", "stdout", "File name to use for log output. If stdout is provided, then output is written directly to the console.")
+	async := flag.Bool("async", true, "This flag determines if the logger should write asynchronously.")
 	flag.Parse()
 
 	var w io.Writer
@@ -25,21 +27,42 @@ func main() {
 		}
 	}
 	l := alog.New(w)
+	go l.Start()
+
+	messageChan := l.MessageChannel()
+	errChan := l.ErrorChannel()
+
+	if errChan != nil {
+		go func(errChan <-chan error) {
+			err := <-errChan
+			l.Stop()
+			log.Fatalf("Error received from logger: %v\n", err)
+		}(errChan)
+	}
 
 	for {
-		var input string
+		reader := bufio.NewReader(os.Stdin)
+
 		fmt.Println("Please enter message to write to log or 'q' to quit.")
-		_, err := fmt.Scanln(&input)
+		input, err := reader.ReadString('\n')
 		if err != nil {
-			fmt.Println("Unable to read input from command line, please try again.")
+			fmt.Println("Unable to read input from command line, please try again.", err)
 			continue
 		}
-		if strings.ToLower(input) == "q" {
+
+		if strings.ToLower(input) == "q\n" || strings.ToLower(input) == "q\r\n" {
+			l.Stop()
 			break
 		}
-		_, err = l.Write(input)
-		if err != nil {
-			fmt.Println("Unable to write message out to log")
+		if *async {
+			if messageChan != nil {
+				messageChan <- input
+			}
+		} else {
+			_, err = l.Write(input)
+			if err != nil {
+				fmt.Println("Unable to write message out to log")
+			}
 		}
 	}
 }
