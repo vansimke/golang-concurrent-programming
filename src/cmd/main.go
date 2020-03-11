@@ -21,9 +21,9 @@ func main() {
 	if strings.ToLower(*out) == "stdout" {
 		w = os.Stdout
 	} else {
-		w, err = os.Open(*out)
+		w, err = os.Create(*out)
 		if err != nil {
-			log.Fatal("Unable to open log file")
+			log.Fatal("Unable to open log file", err)
 		}
 	}
 	l := alog.New(w)
@@ -51,6 +51,12 @@ func main() {
 		}
 
 		if strings.ToLower(input) == "q\n" || strings.ToLower(input) == "q\r\n" {
+			if wc, ok := w.(io.Closer); ok {
+				err := wc.Close()
+				if err != nil {
+					fmt.Println("Failed to close log file:", err)
+				}
+			}
 			l.Stop()
 			break
 		}
