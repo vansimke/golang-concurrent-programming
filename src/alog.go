@@ -43,7 +43,7 @@ func (al Alog) formatMessage(msg string) string {
 	if !strings.HasSuffix(msg, "\n") {
 		msg += "\n"
 	}
-	return fmt.Sprintf("[%v] - %v", time.Now().Format("2006-01-02"), msg)
+	return fmt.Sprintf("[%v] - %v", time.Now().Format("2006-01-02 15:04:05"), msg)
 }
 
 func (al Alog) write(msg string, wg *sync.WaitGroup) {
