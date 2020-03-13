@@ -75,7 +75,6 @@ func (al Alog) write(msg string, wg *sync.WaitGroup) {
 
 func (al Alog) shutdown() {
 	close(al.msgCh)
-	close(al.errorCh)
 	al.shutdownCompleteCh <- struct{}{}
 }
 
