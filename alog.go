@@ -29,7 +29,9 @@ func New(w io.Writer) *Alog {
 		w = os.Stdout
 	}
 	return &Alog{
-		dest: w,
+		dest:    w,
+		msgCh:   make(chan string),
+		errorCh: make(chan error),
 	}
 }
 
