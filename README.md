@@ -7,7 +7,7 @@ To use the test runner:
 
 To run the tests
 
-* use the `go test` command from the command line
+* use the `go test -timeout 2s` command from the command line
 * to focus on a specific test, use the `-run` flag followed by a pattern that matches the test name
     * e.g. `go test -run MessageChannel` will run the first test of the first module
 * all tests for a given module can be run by passing the module identifier to the `-run` command
