@@ -1,5 +1,15 @@
-FROM golang:1.14.0-alpine
+FROM golang:1.14.0
 
-WORKDIR /src/alog
+ENV CGO_ENABLED 0
 
-COPY src .
+WORKDIR /src/app
+
+RUN addgroup --system projects && adduser --system projects --ingroup projects
+
+RUN chown -R projects:projects /src/app
+
+USER projects
+
+COPY . .
+
+RUN go install -v ./...
