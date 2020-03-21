@@ -136,6 +136,14 @@ func TestStartHandlesMessagesModule1(t *testing.T) {
 
 // 08-01
 
+type panickingWriter struct {
+	b *bytes.Buffer
+}
+
+func (pw panickingWriter) Write(data []byte) (int, error) {
+	pw.b.Write(data)
+	panic("panicking!")
+}
 func TestWriteSendsWriteRequestsSequentiallyModule1(t *testing.T) {
 	b := bytes.NewBuffer([]byte{})
 	alog := New(sleepingWriter{b})
@@ -150,21 +158,9 @@ func TestWriteSendsWriteRequestsSequentiallyModule1(t *testing.T) {
 	if !regexp.MustCompile(messageTimestampPattern + "test message\nwrite complete" + messageTimestampPattern + "second message\n").Match(written) {
 		t.Error("Mutex not protecting Alog.dest#Write from concurrent calls")
 	}
-}
 
-// 09-01
-type panickingWriter struct {
-	b *bytes.Buffer
-}
-
-func (pw panickingWriter) Write(data []byte) (int, error) {
-	pw.b.Write(data)
-	panic("panicking!")
-}
-func TestWriteSendsWriteRequestsSequentiallyWhenPanickingModule1(t *testing.T) {
-	TestWriteSendsWriteRequestsSequentiallyModule1(t)
-	b := bytes.NewBuffer([]byte{})
-	alog := New(panickingWriter{b})
+	b = bytes.NewBuffer([]byte{})
+	alog = New(panickingWriter{b})
 	if alog.msgCh == nil {
 		t.Fatal("msgCh field is nil")
 	}
@@ -185,16 +181,16 @@ func TestWriteSendsWriteRequestsSequentiallyWhenPanickingModule1(t *testing.T) {
 		alog.write("second message", nil)
 	}()
 	time.Sleep(1000 * time.Millisecond)
-	written := b.Bytes()
+	written = b.Bytes()
 	if !regexp.MustCompile(messageTimestampPattern + "test message\n" + messageTimestampPattern + "second message\n").Match(written) {
 		t.Error("Mutex not unlocked when panicking")
 	}
 }
 
-// 10-01
+// 09-01
 
 func TestWriteSendsErrorsAsynchronouslyModule1(t *testing.T) {
-	TestWriteSendsWriteRequestsSequentiallyWhenPanickingModule1(t)
+	TestWriteSendsWriteRequestsSequentiallyModule1(t)
 	b := bytes.NewBuffer([]byte{})
 	alog := New(&errorWriter{b})
 	go alog.write("first", nil)
