@@ -136,17 +136,12 @@ func TestStartHandlesMessagesModule1(t *testing.T) {
 
 // 08-01
 
-func TestMutexIsIntializedModule1(t *testing.T) {
-	alog := New(nil)
-	if alog.m == nil {
-		t.Fatal("Alog's mutex field 'm' not initialized")
-	}
-}
-
-// 08-02
 func TestWriteSendsWriteRequestsSequentiallyModule1(t *testing.T) {
 	b := bytes.NewBuffer([]byte{})
 	alog := New(sleepingWriter{b})
+	if alog.m == nil {
+		t.Fatal("Alog's mutex field 'm' not initialized")
+	}
 	go alog.write("test message", nil)
 	time.Sleep(100 * time.Millisecond)
 	go alog.write("second message", nil)
