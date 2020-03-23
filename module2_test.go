@@ -12,7 +12,7 @@ import (
 const messageTimestampPattern = `\[\d{4}-\d{2}-\d{2}\ \d{2}:\d{2}:\d{2}] - `
 
 // 01-01 (Task 01, Test 01)
-func TestMessageChannelModule1(t *testing.T) {
+func TestMessageChannelModule2(t *testing.T) {
 	alog := New(nil)
 	if alog.msgCh == nil {
 		t.Fatal("msgCh field not initialized. Should have type 'chan string' but it is currently nil")
@@ -20,7 +20,7 @@ func TestMessageChannelModule1(t *testing.T) {
 }
 
 // 02-01
-func TestErrorChannelModule1(t *testing.T) {
+func TestErrorChannelModule2(t *testing.T) {
 	alog := New(nil)
 	if alog.errorCh == nil {
 		t.Fatal("errorCh field not initialized. Should have type 'chan string' but it is currently nil")
@@ -28,7 +28,7 @@ func TestErrorChannelModule1(t *testing.T) {
 }
 
 // 03-01
-func TestMessageChannelMethodModule1(t *testing.T) {
+func TestMessageChannelMethodModule2(t *testing.T) {
 	alog := New(nil)
 	if alog.MessageChannel() != alog.msgCh {
 		t.Fatal("MessageChannel method does not return the msgCh field")
@@ -40,7 +40,7 @@ func TestMessageChannelMethodModule1(t *testing.T) {
 }
 
 // 04-01
-func TestErrorChannelMethodModule1(t *testing.T) {
+func TestErrorChannelMethodModule2(t *testing.T) {
 	alog := New(nil)
 	if alog.ErrorChannel() != alog.errorCh {
 		t.Fatal("ErrorChannel method does not return the errorCh field")
@@ -52,7 +52,7 @@ func TestErrorChannelMethodModule1(t *testing.T) {
 }
 
 // 05-01
-func TestWritesToWriterModule1(t *testing.T) {
+func TestWritesToWriterModule2(t *testing.T) {
 	b := bytes.NewBuffer([]byte{})
 	alog := New(b)
 	alog.write("test", nil)
@@ -76,7 +76,7 @@ func (ew errorWriter) Write(data []byte) (int, error) {
 	ew.b.Write(data)
 	return 0, errors.New("error")
 }
-func TestWriteSendsErrorsToErrorChannelModule1(t *testing.T) {
+func TestWriteSendsErrorsToErrorChannelModule2(t *testing.T) {
 	alog := New(&errorWriter{bytes.NewBuffer([]byte{})})
 	alog.errorCh = make(chan error, 1)
 	alog.write("test", nil)
@@ -102,7 +102,7 @@ func (sw sleepingWriter) Write(data []byte) (int, error) {
 	return 0, nil
 }
 
-func TestStartHandlesMessagesModule1(t *testing.T) {
+func TestStartHandlesMessagesModule2(t *testing.T) {
 	b := bytes.NewBuffer([]byte{})
 	alog := New(sleepingWriter{b})
 	alog.msgCh = make(chan string, 2)
@@ -144,7 +144,7 @@ func (pw panickingWriter) Write(data []byte) (int, error) {
 	pw.b.Write(data)
 	panic("panicking!")
 }
-func TestWriteSendsWriteRequestsSequentiallyModule1(t *testing.T) {
+func TestWriteSendsWriteRequestsSequentiallyModule2(t *testing.T) {
 	b := bytes.NewBuffer([]byte{})
 	alog := New(sleepingWriter{b})
 	if alog.m == nil {
@@ -189,8 +189,8 @@ func TestWriteSendsWriteRequestsSequentiallyModule1(t *testing.T) {
 
 // 09-01
 
-func TestWriteSendsErrorsAsynchronouslyModule1(t *testing.T) {
-	TestWriteSendsWriteRequestsSequentiallyModule1(t)
+func TestWriteSendsErrorsAsynchronouslyModule2(t *testing.T) {
+	TestWriteSendsWriteRequestsSequentiallyModule2(t)
 	b := bytes.NewBuffer([]byte{})
 	alog := New(&errorWriter{b})
 	go alog.write("first", nil)
