@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// 011
+// 01
 func TestNewInitializesShutdownChannelsModule3(t *testing.T) {
 	alog := New(nil)
 	if alog.shutdownCh == nil {
@@ -98,6 +98,7 @@ func TestStopMethodModule3(t *testing.T) {
 func TestWriteAllBeforeShutdownModule3(t *testing.T) {
 	b := bytes.NewBuffer([]byte{})
 	alog := New(sleepingWriter{b})
+	alog.msgCh = make(chan string, 2)
 	go alog.Start()
 	alog.msgCh <- "first"
 	alog.msgCh <- "second"

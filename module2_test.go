@@ -11,7 +11,7 @@ import (
 
 const messageTimestampPattern = `\[\d{4}-\d{2}-\d{2}\ \d{2}:\d{2}:\d{2}] - `
 
-// 01-01 (Task 01, Test 01)
+// 01
 func TestMessageChannelModule2(t *testing.T) {
 	alog := New(nil)
 	if alog.msgCh == nil {
@@ -19,15 +19,15 @@ func TestMessageChannelModule2(t *testing.T) {
 	}
 }
 
-// 02-01
+// 02
 func TestErrorChannelModule2(t *testing.T) {
 	alog := New(nil)
 	if alog.errorCh == nil {
-		t.Fatal("errorCh field not initialized. Should have type 'chan string' but it is currently nil")
+		t.Fatal("errorCh field not initialized. Should have type 'chan error' but it is currently nil")
 	}
 }
 
-// 03-01
+// 03
 func TestMessageChannelMethodModule2(t *testing.T) {
 	alog := New(nil)
 	if alog.MessageChannel() != alog.msgCh {
@@ -39,7 +39,7 @@ func TestMessageChannelMethodModule2(t *testing.T) {
 	}
 }
 
-// 04-01
+// 04
 func TestErrorChannelMethodModule2(t *testing.T) {
 	alog := New(nil)
 	if alog.ErrorChannel() != alog.errorCh {
@@ -51,7 +51,7 @@ func TestErrorChannelMethodModule2(t *testing.T) {
 	}
 }
 
-// 05-01
+// 05
 func TestWritesToWriterModule2(t *testing.T) {
 	b := bytes.NewBuffer([]byte{})
 	alog := New(b)
@@ -66,8 +66,7 @@ func TestWritesToWriterModule2(t *testing.T) {
 	}
 }
 
-// 06-01
-
+// 06
 type errorWriter struct {
 	b *bytes.Buffer
 }
@@ -90,7 +89,7 @@ func TestWriteSendsErrorsToErrorChannelModule2(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 }
 
-// 07-01
+// 07
 type sleepingWriter struct {
 	b *bytes.Buffer
 }
@@ -134,8 +133,7 @@ func TestStartHandlesMessagesModule2(t *testing.T) {
 	}
 }
 
-// 08-01
-
+// 08
 type panickingWriter struct {
 	b *bytes.Buffer
 }
@@ -187,8 +185,7 @@ func TestWriteSendsWriteRequestsSequentiallyModule2(t *testing.T) {
 	}
 }
 
-// 09-01
-
+// 09
 func TestWriteSendsErrorsAsynchronouslyModule2(t *testing.T) {
 	TestWriteSendsWriteRequestsSequentiallyModule2(t)
 	b := bytes.NewBuffer([]byte{})
